@@ -103,6 +103,48 @@ class LeetCode {
         }
         return result
     }
+    
+    
+/*
+     There are N children standing in a line. Each child is assigned a rating value.
+     
+     You are giving candies to these children subjected to the following requirements:
+     
+     Each child must have at least one candy.
+     Children with a higher rating get more candies than their neighbors.
+     What is the minimum candies you must give?
+*/
+    class func candy(values: [Int]) -> Int {
+        var min: Int = 0
+        var wave = Array<Int>(repeating: 0, count: values.count)
+        for index in 0..<values.count {
+            let curValue = values[index]
+            let preValue = index - 1 >= 0 ? values[index - 1] : curValue
+            let nextValue = index + 1 < values.count ? values[index + 1] : curValue
+            wave[index] = curValue > preValue || curValue > nextValue ? 1 : 0
+        }
+        
+        var count = 1
+        for index in 0..<wave.count {
+            let curValue = wave[index]
+            if index - 1 >= 0 {
+                if curValue == 1 {
+                    count += 1
+                    min += count
+                } else {
+                    min += 1
+                    count = 1
+                }
+            } else {
+                min += 1
+                count = 1
+            }
+        }
+        
+        return min
+    }
+    
+    
 }
 
 class Node {
