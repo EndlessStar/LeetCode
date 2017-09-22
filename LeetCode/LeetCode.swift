@@ -144,7 +144,66 @@ class LeetCode {
         return min
     }
     
+    /*
+     Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
+     
+     For example,
+     Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
+     
+     
+     The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.Thanks Marcos for contributing this image!
+    */
     
+    class func calculateRainfall(elevationMap: [Int]) -> Int {
+        
+        func statistics(startIndex: Int, endIndex: Int, elevation: Int) -> Int {
+            guard startIndex >= 0 && endIndex < elevationMap.count else {
+                return 0
+            }
+            var count = 0
+            for index in startIndex...endIndex {
+                count += elevation - elevationMap[index]
+            }
+            return count
+        }
+        
+        func findMaxElevation(startIndex: Int, endIndex: Int) -> (position: Int, elevation: Int) {
+            guard startIndex >= 0 && endIndex < elevationMap.count else {
+                return (NSNotFound, NSNotFound)
+            }
+            var maxElevation: Int = Int.min
+            var position: Int = NSNotFound
+            for index in startIndex...endIndex {
+                if maxElevation < elevationMap[index] {
+                    maxElevation = elevationMap[index]
+                    position = index
+                }
+            }
+            return (position, maxElevation)
+        }
+        let maxElevation = findMaxElevation(startIndex: 0, endIndex: elevationMap.count - 1)
+        var leftIndex = maxElevation.position - 1
+        var rightIndex = maxElevation.position + 1
+        var rainfall: Int = 0
+        while leftIndex >= 0 || rightIndex < elevationMap.count  {
+            if leftIndex >= 0 {
+                let leftMaxElevation = findMaxElevation(startIndex: 0, endIndex: leftIndex)
+                if leftMaxElevation.elevation != NSNotFound && leftMaxElevation.position != NSNotFound {
+                    rainfall += statistics(startIndex: leftMaxElevation.position, endIndex: leftIndex, elevation: leftMaxElevation.elevation)
+                    leftIndex = leftMaxElevation.position - 1
+                }
+            }
+            
+            if rightIndex < elevationMap.count {
+                let rightMaxElevation = findMaxElevation(startIndex: rightIndex, endIndex: elevationMap.count - 1)
+                if rightMaxElevation.elevation != NSNotFound && rightMaxElevation.position != NSNotFound {
+                    rainfall += statistics(startIndex: rightIndex, endIndex: rightMaxElevation.position, elevation: rightMaxElevation.elevation)
+                    rightIndex = rightMaxElevation.position + 1
+                }
+            }
+        }
+        return rainfall
+    }
 }
 
 class Node {
