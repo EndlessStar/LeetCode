@@ -204,6 +204,57 @@ class LeetCode {
         }
         return rainfall
     }
+    
+    /*
+     You are given a string, S, and a list of words, L, that are all of the same length. Find all starting indices of substring(s) in S that is a concatenation of each word in L exactly once and without any intervening characters.
+     
+     For example, given:
+     S: "barfoothefoobarman"
+     L: ["foo", "bar"]
+     
+     You should return the indices: [0,9].
+     (order does not matter).
+     */
+    
+    class func substringWithConcatenationWords(S: String, L: [String]) -> [Int] {
+        guard !S.isEmpty && L.count > 0 else {
+            return []
+        }
+        var result: [Int] = []
+        let length = L[0].characters.count
+        var substring: String = ""
+        var temp_L: [String] = L
+        var count = 0
+        var startIndex = 0
+        for (index, char) in S.characters.enumerated() {
+            count += 1
+            substring.append(char)
+            
+            var isMatching = false
+            if count == length {
+                for (i, v) in temp_L.enumerated() {
+                    if v == substring {
+                        temp_L.remove(at: i)
+                        isMatching = true
+                        break
+                    }
+                }
+                if isMatching {
+                    if temp_L.count == 0 {
+                        result.append(startIndex)
+                        startIndex = index + 1
+                        temp_L = L
+                    }
+                } else {
+                    startIndex = index + 1
+                    temp_L = L
+                }
+                count = 0
+                substring = ""
+            }
+        }
+        return result
+    }
 }
 
 class Node {
